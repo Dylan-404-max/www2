@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a5f4a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>TimberPro - Business Management</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Offline Banner -->
+    <div id="offline-banner" class="offline-banner hidden">
+        <span class="offline-icon">📡</span>
+        <span>You are offline. Sales will sync when back online.</span>
+    </div>
+
+    <!-- Splash Screen (PWA) -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">🌲</div>
+            <h1 class="splash-title">TimberPro</h1>
+            <p class="splash-subtitle">Business Management System</p>
+            <div class="splash-loader">
+                <div class="splash-loader-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-screen hidden">
+        <div class="login-container">
+            <div class="login-logo">🌲</div>
+            <h1 class="login-title">TimberPro</h1>
+            <p class="login-subtitle">Sign in to your account</p>
+
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter username" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter password" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-large">
+                    <span class="btn-text">Sign In</span>
+                    <span class="btn-loader hidden">⏳</span>
+                </button>
+                <div id="login-error" class="error-message hidden"></div>
+            </form>
+
+            <div class="login-footer">
+                <p>Default: admin / admin123</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="app hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <button id="menu-toggle" class="menu-toggle" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="header-brand">
+                <span class="header-icon">🌲</span>
+                <span class="header-title">TimberPro</span>
+            </div>
+            <div id="header-branch" class="header-branch hidden">
+                <span>🏢</span>
+                <span id="header-branch-name">Main</span>
+            </div>
+            <div class="header-actions">
+                <button id="notifications-btn" class="icon-btn" aria-label="Notifications">
+                    <span>🔔</span>
+                    <span id="notification-badge" class="badge hidden">0</span>
+                </button>
+                <button id="profile-btn" class="icon-btn" aria-label="Profile">
+                    <span>👤</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Sidebar Navigation -->
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <span class="sidebar-icon">🌲</span>
+                <span class="sidebar-title">TimberPro</span>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-user">
+                <div class="user-avatar">👤</div>
+                <div class="user-info">
+                    <div id="user-name" class="user-name">User</div>
+                    <div id="user-role" class="user-role">Role</div>
+                </div>
+            </div>
+
+            <!-- Branch Switcher (Admin only) -->
+            <div id="branch-selector" class="branch-selector hidden">
+                <label>🏢 Branch</label>
+                <select id="branch-select" onchange="switchBranch(this.value)">
+                    <option value="">All Branches</option>
+                </select>
+            </div>
+
+            <div class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+                <a href="#sales" class="nav-item" data-page="sales" data-perm="sales">
+                    <span class="nav-icon">💰</span>
+                    <span class="nav-label">Sales</span>
+                    <span class="nav-badge">NEW</span>
+                </a>
+                <a href="#drafts" class="nav-item" data-page="drafts" data-perm="sales">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-label">Drafts</span>
+                </a>
+                <a href="#orders" class="nav-item" data-page="orders" data-perm="orders">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-label">Orders</span>
+                </a>
+                <a href="#inventory" class="nav-item" data-page="inventory" data-perm="inventory">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-label">Inventory</span>
+                </a>
+                <a href="#products" class="nav-item" data-page="products" data-perm="products">
+                    <span class="nav-icon">🪵</span>
+                    <span class="nav-label">Products</span>
+                </a>
+                <a href="#services" class="nav-item" data-page="services" data-perm="services">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-label">Services</span>
+                </a>
+                <a href="#expenses" class="nav-item" data-page="expenses" data-perm="expenses">
+                    <span class="nav-icon">💸</span>
+                    <span class="nav-label">Expenses</span>
+                </a>
+                <a href="#employees" class="nav-item" data-page="employees" data-perm="employees">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">Employees</span>
+                </a>
+                <a href="#payroll" class="nav-item" data-page="payroll" data-perm="payroll">
+                    <span class="nav-icon">💵</span>
+                    <span class="nav-label">Payroll</span>
+                </a>
+                <a href="#customers" class="nav-item" data-page="customers" data-perm="customers">
+                    <span class="nav-icon">🤝</span>
+                    <span class="nav-label">Customers</span>
+                </a>
+                <a href="#analytics" class="nav-item" data-page="analytics" data-perm="analytics">
+                    <span class="nav-icon">📈</span>
+                    <span class="nav-label">Analytics</span>
+                </a>
+                <a href="#reports" class="nav-item" data-page="reports" data-perm="reports">
+                    <span class="nav-icon">📄</span>
+                    <span class="nav-label">Reports</span>
+                </a>
+                <a href="#branches" class="nav-item" data-page="branches" data-perm="branches">
+                    <span class="nav-icon">🏢</span>
+                    <span class="nav-label">Branches</span>
+                </a>
+                <a href="#users" class="nav-item" data-page="users" data-perm="users">
+                    <span class="nav-icon">🔐</span>
+                    <span class="nav-label">Users & Roles</span>
+                </a>
+                <a href="#audit-logs" class="nav-item" data-page="audit-logs" data-perm="audit_logs">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-label">Audit Logs</span>
+                </a>
+                <a href="#settings" class="nav-item" data-page="settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-label">Settings</span>
+                </a>
+            </div>
+            <div class="sidebar-footer">
+                <button id="logout-btn" class="btn btn-outline btn-full">
+                    <span>🚪</span> Logout
+                </button>
+            </div>
+        </nav>
+
+        <!-- Overlay -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+        <!-- Main Content -->
+        <main id="main-content" class="main-content">
+            <!-- Pages will be rendered here -->
+        </main>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Modal Container -->
+    <div id="modal-container" class="modal-container hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content"></div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
